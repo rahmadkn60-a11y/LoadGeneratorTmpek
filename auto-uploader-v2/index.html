@@ -2,24 +2,11 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#07070c"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07070c">
   <title>Auto Uploader V2</title>
 
   <style>
-    /* =========================================
-       RESET
-    ========================================= */
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -29,7 +16,6 @@
     :root {
       --bg: #050509;
       --panel: rgba(15, 15, 24, 0.72);
-      --panel-strong: rgba(19, 19, 31, 0.92);
       --border: rgba(255, 255, 255, 0.09);
       --text: #f5f5f7;
       --muted: #858594;
@@ -46,9 +32,7 @@
 
     body {
       min-height: 100vh;
-
       color: var(--text);
-
       font-family:
         Inter,
         ui-sans-serif,
@@ -61,31 +45,23 @@
       background:
         radial-gradient(
           circle at 15% 15%,
-          rgba(155, 108, 255, 0.14),
+          rgba(155,108,255,0.14),
           transparent 30%
         ),
-
         radial-gradient(
           circle at 85% 20%,
-          rgba(72, 217, 255, 0.12),
+          rgba(72,217,255,0.12),
           transparent 30%
         ),
-
         radial-gradient(
           circle at 50% 90%,
-          rgba(255, 79, 216, 0.09),
+          rgba(255,79,216,0.09),
           transparent 35%
         ),
-
         var(--bg);
 
       overflow-x: hidden;
     }
-
-
-    /* =========================================
-       ANIMATED BACKGROUND
-    ========================================= */
 
     body::before {
       content: "";
@@ -103,14 +79,18 @@
       background:
         radial-gradient(
           circle,
-          rgba(155, 108, 255, 0.15),
+          rgba(155,108,255,0.15),
           transparent 70%
         );
 
       filter: blur(20px);
 
       animation:
-        floatOne 12s ease-in-out infinite alternate;
+        floatOne
+        12s
+        ease-in-out
+        infinite
+        alternate;
 
       pointer-events: none;
       z-index: -1;
@@ -132,14 +112,18 @@
       background:
         radial-gradient(
           circle,
-          rgba(72, 217, 255, 0.13),
+          rgba(72,217,255,0.13),
           transparent 70%
         );
 
       filter: blur(25px);
 
       animation:
-        floatTwo 14s ease-in-out infinite alternate;
+        floatTwo
+        14s
+        ease-in-out
+        infinite
+        alternate;
 
       pointer-events: none;
       z-index: -1;
@@ -148,13 +132,13 @@
     @keyframes floatOne {
       from {
         transform:
-          translate3d(0, 0, 0)
+          translate3d(0,0,0)
           scale(1);
       }
 
       to {
         transform:
-          translate3d(130px, -70px, 0)
+          translate3d(130px,-70px,0)
           scale(1.2);
       }
     }
@@ -162,21 +146,16 @@
     @keyframes floatTwo {
       from {
         transform:
-          translate3d(0, 0, 0)
+          translate3d(0,0,0)
           scale(1);
       }
 
       to {
         transform:
-          translate3d(-120px, -80px, 0)
+          translate3d(-120px,-80px,0)
           scale(1.15);
       }
     }
-
-
-    /* =========================================
-       RGB LINE
-    ========================================= */
 
     .rgb-line {
       position: fixed;
@@ -202,10 +181,14 @@
       background-size: 300% 100%;
 
       animation:
-        rgbMove 5s linear infinite;
+        rgbMove
+        5s
+        linear
+        infinite;
 
       box-shadow:
-        0 0 15px rgba(155, 108, 255, 0.7);
+        0 0 15px
+        rgba(155,108,255,0.7);
     }
 
     @keyframes rgbMove {
@@ -218,13 +201,12 @@
       }
     }
 
-
-    /* =========================================
-       APP
-    ========================================= */
-
     .app {
-      width: min(1120px, calc(100% - 32px));
+      width:
+        min(
+          1120px,
+          calc(100% - 32px)
+        );
 
       margin:
         0 auto;
@@ -233,18 +215,15 @@
         80px 0 50px;
     }
 
-
-    /* =========================================
-       HEADER
-    ========================================= */
-
     .header {
       text-align: center;
-
       margin-bottom: 42px;
 
       animation:
-        fadeUp 0.7s ease both;
+        fadeUp
+        0.7s
+        ease
+        both;
     }
 
     .badge {
@@ -257,12 +236,14 @@
         8px 14px;
 
       border:
-        1px solid rgba(255, 255, 255, 0.1);
+        1px solid
+        rgba(255,255,255,0.1);
 
-      border-radius: 999px;
+      border-radius:
+        999px;
 
       background:
-        rgba(255, 255, 255, 0.035);
+        rgba(255,255,255,0.035);
 
       backdrop-filter:
         blur(14px);
@@ -283,7 +264,8 @@
         uppercase;
 
       box-shadow:
-        0 0 30px rgba(155, 108, 255, 0.06);
+        0 0 30px
+        rgba(155,108,255,0.06);
     }
 
     .status-dot {
@@ -292,25 +274,28 @@
 
       border-radius: 50%;
 
-      background: var(--green);
+      background:
+        var(--green);
 
       box-shadow:
-        0 0 10px var(--green);
+        0 0 10px
+        var(--green);
 
       animation:
-        pulse 1.8s infinite;
+        pulse
+        1.8s
+        infinite;
     }
 
     @keyframes pulse {
-      0%,
-      100% {
+      0%,100% {
         opacity: 1;
         transform: scale(1);
       }
 
       50% {
-        opacity: 0.45;
-        transform: scale(0.72);
+        opacity: .45;
+        transform: scale(.72);
       }
     }
 
@@ -318,13 +303,16 @@
       margin-top: 20px;
 
       font-size:
-        clamp(42px, 7vw, 76px);
+        clamp(
+          42px,
+          7vw,
+          76px
+        );
 
-      line-height:
-        0.98;
+      line-height: .98;
 
       letter-spacing:
-        -0.055em;
+        -.055em;
 
       font-weight:
         900;
@@ -334,7 +322,7 @@
       background:
         linear-gradient(
           100deg,
-          #ffffff 10%,
+          #fff 10%,
           #b895ff 38%,
           #54dcff 65%,
           #61ffba 90%
@@ -351,8 +339,7 @@
     }
 
     .subtitle {
-      max-width:
-        650px;
+      max-width: 650px;
 
       margin:
         20px auto 0;
@@ -367,16 +354,12 @@
         1.7;
     }
 
-
-    /* =========================================
-       MAIN CARD
-    ========================================= */
-
     .card {
       position: relative;
 
       border:
-        1px solid var(--border);
+        1px solid
+        var(--border);
 
       border-radius:
         24px;
@@ -391,13 +374,18 @@
         blur(25px);
 
       box-shadow:
-        0 30px 90px rgba(0, 0, 0, 0.45);
+        0 30px 90px
+        rgba(0,0,0,.45);
 
       overflow:
         hidden;
 
       animation:
-        fadeUp 0.8s 0.12s ease both;
+        fadeUp
+        .8s
+        .12s
+        ease
+        both;
     }
 
     .card::before {
@@ -415,14 +403,15 @@
       background:
         linear-gradient(
           120deg,
-          rgba(155, 108, 255, 0.35),
+          rgba(155,108,255,.35),
           transparent 30%,
           transparent 65%,
-          rgba(72, 217, 255, 0.22)
+          rgba(72,217,255,.22)
         );
 
       -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0)
+        content-box,
         linear-gradient(#fff 0 0);
 
       -webkit-mask-composite:
@@ -444,37 +433,26 @@
         24px;
     }
 
-
-    /* =========================================
-       TOOLBAR
-    ========================================= */
-
     .toolbar {
-      display:
-        flex;
+      display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       justify-content:
         space-between;
 
-      gap:
-        15px;
+      gap: 15px;
 
       margin-bottom:
         18px;
     }
 
     .toolbar-title {
-      display:
-        flex;
+      display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      gap:
-        10px;
+      gap: 10px;
 
       font-size:
         14px;
@@ -484,26 +462,22 @@
     }
 
     .code-icon {
-      display:
-        grid;
+      display: grid;
 
-      place-items:
-        center;
+      place-items: center;
 
-      width:
-        34px;
-
-      height:
-        34px;
+      width: 34px;
+      height: 34px;
 
       border-radius:
         10px;
 
       background:
-        rgba(155, 108, 255, 0.12);
+        rgba(155,108,255,.12);
 
       border:
-        1px solid rgba(155, 108, 255, 0.2);
+        1px solid
+        rgba(155,108,255,.2);
 
       color:
         #b895ff;
@@ -523,11 +497,6 @@
         tabular-nums;
     }
 
-
-    /* =========================================
-       TEXTAREA
-    ========================================= */
-
     .editor-wrap {
       position:
         relative;
@@ -544,7 +513,8 @@
         vertical;
 
       border:
-        1px solid rgba(255, 255, 255, 0.08);
+        1px solid
+        rgba(255,255,255,.08);
 
       border-radius:
         18px;
@@ -556,7 +526,7 @@
         22px;
 
       background:
-        rgba(3, 3, 8, 0.78);
+        rgba(3,3,8,.78);
 
       color:
         #e8e8ef;
@@ -577,9 +547,9 @@
         2;
 
       transition:
-        border-color 0.25s,
-        box-shadow 0.25s,
-        background 0.25s;
+        border-color .25s,
+        box-shadow .25s,
+        background .25s;
     }
 
     textarea::placeholder {
@@ -589,33 +559,28 @@
 
     textarea:focus {
       border-color:
-        rgba(155, 108, 255, 0.55);
+        rgba(155,108,255,.55);
 
       background:
-        rgba(5, 5, 12, 0.9);
+        rgba(5,5,12,.9);
 
       box-shadow:
-        0 0 0 4px rgba(155, 108, 255, 0.07),
-        0 0 45px rgba(155, 108, 255, 0.08);
+        0 0 0 4px
+        rgba(155,108,255,.07),
+
+        0 0 45px
+        rgba(155,108,255,.08);
     }
 
-
-    /* =========================================
-       BOTTOM BAR
-    ========================================= */
-
     .bottom {
-      display:
-        flex;
+      display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       justify-content:
         space-between;
 
-      gap:
-        18px;
+      gap: 18px;
 
       margin-top:
         18px;
@@ -661,7 +626,7 @@
         900;
 
       letter-spacing:
-        0.01em;
+        .01em;
 
       background:
         linear-gradient(
@@ -672,22 +637,22 @@
         );
 
       box-shadow:
-        0 12px 35px rgba(84, 220, 255, 0.16);
+        0 12px 35px
+        rgba(84,220,255,.16);
 
       overflow:
         hidden;
 
       transition:
-        transform 0.2s,
-        box-shadow 0.2s,
-        opacity 0.2s;
+        transform .2s,
+        box-shadow .2s,
+        opacity .2s;
     }
 
     .convert-btn::before {
       content: "";
 
-      position:
-        absolute;
+      position: absolute;
 
       top: 0;
       left: -100%;
@@ -699,7 +664,7 @@
         linear-gradient(
           90deg,
           transparent,
-          rgba(255, 255, 255, 0.55),
+          rgba(255,255,255,.55),
           transparent
         );
 
@@ -707,7 +672,7 @@
         skewX(-20deg);
 
       transition:
-        left 0.5s;
+        left .5s;
     }
 
     .convert-btn:hover {
@@ -715,7 +680,8 @@
         translateY(-2px);
 
       box-shadow:
-        0 15px 45px rgba(84, 220, 255, 0.25);
+        0 15px 45px
+        rgba(84,220,255,.25);
     }
 
     .convert-btn:hover::before {
@@ -733,16 +699,11 @@
         not-allowed;
 
       opacity:
-        0.55;
+        .55;
 
       transform:
         none;
     }
-
-
-    /* =========================================
-       SPINNER
-    ========================================= */
 
     .spinner {
       display:
@@ -755,7 +716,8 @@
         15px;
 
       border:
-        2px solid rgba(0, 0, 0, 0.25);
+        2px solid
+        rgba(0,0,0,.25);
 
       border-top-color:
         #050509;
@@ -764,7 +726,10 @@
         50%;
 
       animation:
-        spin 0.7s linear infinite;
+        spin
+        .7s
+        linear
+        infinite;
 
       vertical-align:
         -3px;
@@ -780,11 +745,6 @@
       }
     }
 
-
-    /* =========================================
-       RESULT
-    ========================================= */
-
     .result {
       display:
         none;
@@ -796,16 +756,20 @@
         20px;
 
       border:
-        1px solid rgba(97, 255, 186, 0.16);
+        1px solid
+        rgba(97,255,186,.16);
 
       border-radius:
         18px;
 
       background:
-        rgba(97, 255, 186, 0.035);
+        rgba(97,255,186,.035);
 
       animation:
-        fadeUp 0.4s ease both;
+        fadeUp
+        .4s
+        ease
+        both;
     }
 
     .result.show {
@@ -815,38 +779,32 @@
 
     .result.error {
       border-color:
-        rgba(255, 93, 114, 0.2);
+        rgba(255,93,114,.2);
 
       background:
-        rgba(255, 93, 114, 0.035);
+        rgba(255,93,114,.035);
     }
 
     .result-head {
-      display:
-        flex;
+      display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       justify-content:
         space-between;
 
-      gap:
-        10px;
+      gap: 10px;
 
       margin-bottom:
         15px;
     }
 
     .result-title {
-      display:
-        flex;
+      display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      gap:
-        9px;
+      gap: 9px;
 
       font-size:
         13px;
@@ -856,23 +814,18 @@
     }
 
     .success-icon {
-      display:
-        grid;
+      display: grid;
 
-      place-items:
-        center;
+      place-items: center;
 
-      width:
-        28px;
-
-      height:
-        28px;
+      width: 28px;
+      height: 28px;
 
       border-radius:
         9px;
 
       background:
-        rgba(97, 255, 186, 0.1);
+        rgba(97,255,186,.1);
 
       color:
         var(--green);
@@ -897,13 +850,14 @@
         15px;
 
       border:
-        1px solid rgba(255, 255, 255, 0.07);
+        1px solid
+        rgba(255,255,255,.07);
 
       border-radius:
         13px;
 
       background:
-        rgba(0, 0, 0, 0.28);
+        rgba(0,0,0,.28);
 
       margin-top:
         10px;
@@ -923,7 +877,7 @@
         800;
 
       letter-spacing:
-        0.08em;
+        .08em;
 
       text-transform:
         uppercase;
@@ -975,13 +929,14 @@
         0 10px;
 
       border:
-        1px solid rgba(255, 255, 255, 0.09);
+        1px solid
+        rgba(255,255,255,.09);
 
       border-radius:
         9px;
 
       background:
-        rgba(255, 255, 255, 0.05);
+        rgba(255,255,255,.05);
 
       color:
         #bdbdca;
@@ -996,21 +951,16 @@
         800;
 
       transition:
-        0.2s;
+        .2s;
     }
 
     .copy-btn:hover {
       background:
-        rgba(255, 255, 255, 0.1);
+        rgba(255,255,255,.1);
 
       color:
-        white;
+        #fff;
     }
-
-
-    /* =========================================
-       FOOTER
-    ========================================= */
 
     footer {
       padding:
@@ -1026,38 +976,27 @@
         11px;
     }
 
-
-    /* =========================================
-       ANIMATIONS
-    ========================================= */
-
     @keyframes fadeUp {
       from {
-        opacity:
-          0;
-
+        opacity: 0;
         transform:
           translateY(18px);
       }
 
       to {
-        opacity:
-          1;
-
+        opacity: 1;
         transform:
           translateY(0);
       }
     }
 
-
-    /* =========================================
-       RESPONSIVE
-    ========================================= */
-
     @media (max-width: 700px) {
       .app {
         width:
-          min(100% - 20px, 1120px);
+          min(
+            100% - 20px,
+            1120px
+          );
 
         padding-top:
           55px;
@@ -1116,10 +1055,6 @@
 
   <main class="app">
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-
     <header class="header">
 
       <div class="badge">
@@ -1139,11 +1074,6 @@
       </p>
 
     </header>
-
-
-    <!-- =========================
-         MAIN CARD
-    ========================== -->
 
     <section class="card">
 
@@ -1170,11 +1100,6 @@
 
         </div>
 
-
-        <!-- =========================
-             EDITOR
-        ========================== -->
-
         <div class="editor-wrap">
 
           <textarea
@@ -1193,11 +1118,6 @@ print('Hello World')
 
         </div>
 
-
-        <!-- =========================
-             BOTTOM
-        ========================== -->
-
         <div class="bottom">
 
           <div class="hint">
@@ -1214,11 +1134,6 @@ print('Hello World')
           </button>
 
         </div>
-
-
-        <!-- =========================
-             RESULT
-        ========================== -->
 
         <div
           class="result"
@@ -1246,9 +1161,6 @@ print('Hello World')
 
           </div>
 
-
-          <!-- RAW URL -->
-
           <div class="output">
 
             <span class="output-label">
@@ -1269,9 +1181,6 @@ print('Hello World')
             </button>
 
           </div>
-
-
-          <!-- LOADSTRING -->
 
           <div class="output">
 
@@ -1300,63 +1209,67 @@ print('Hello World')
 
     </section>
 
-
     <footer>
-      Auto Uploader V2 · GitHub API
+      Auto Uploader V2 · Universal GitHub API
     </footer>
 
   </main>
 
-
   <script>
-    // =========================================
-    // CONFIG
-    // =========================================
-
-    /*
-      Nanti setelah Worker berhasil di-deploy,
-      ganti URL di bawah dengan URL Worker kamu.
-
-      Contoh:
-      https://auto-uploader-v2.username.workers.dev
-    */
+    // =========================
+    // WORKER CONFIG
+    // =========================
 
     const WORKER_URL =
-      "https://auto-uploader-v2.YOUR-SUBDOMAIN.workers.dev";
+      "https://loadgeneratortmpek.vanzmodeonaktif.workers.dev";
 
-
-    // =========================================
+    // =========================
     // ELEMENTS
-    // =========================================
+    // =========================
 
     const codeInput =
-      document.getElementById("codeInput");
+      document.getElementById(
+        "codeInput"
+      );
 
     const counter =
-      document.getElementById("counter");
+      document.getElementById(
+        "counter"
+      );
 
     const convertBtn =
-      document.getElementById("convertBtn");
+      document.getElementById(
+        "convertBtn"
+      );
 
     const result =
-      document.getElementById("result");
+      document.getElementById(
+        "result"
+      );
 
     const resultTitle =
-      document.getElementById("resultTitle");
+      document.getElementById(
+        "resultTitle"
+      );
 
     const fileName =
-      document.getElementById("fileName");
+      document.getElementById(
+        "fileName"
+      );
 
     const rawUrl =
-      document.getElementById("rawUrl");
+      document.getElementById(
+        "rawUrl"
+      );
 
     const loadstring =
-      document.getElementById("loadstring");
+      document.getElementById(
+        "loadstring"
+      );
 
-
-    // =========================================
+    // =========================
     // CHARACTER COUNTER
-    // =========================================
+    // =========================
 
     function updateCounter() {
       const length =
@@ -1373,24 +1286,28 @@ print('Hello World')
 
     updateCounter();
 
-
-    // =========================================
-    // HIDE RESULT
-    // =========================================
+    // =========================
+    // RESULT
+    // =========================
 
     function hideResult() {
-      result.classList.remove("show");
-      result.classList.remove("error");
+      result.classList.remove(
+        "show"
+      );
+
+      result.classList.remove(
+        "error"
+      );
     }
 
-
-    // =========================================
-    // SHOW ERROR
-    // =========================================
-
     function showError(message) {
-      result.classList.add("show");
-      result.classList.add("error");
+      result.classList.add(
+        "show"
+      );
+
+      result.classList.add(
+        "error"
+      );
 
       resultTitle.textContent =
         "Upload gagal";
@@ -1405,10 +1322,9 @@ print('Hello World')
         "";
     }
 
-
-    // =========================================
+    // =========================
     // UPLOAD
-    // =========================================
+    // =========================
 
     async function uploadCode() {
       const code =
@@ -1417,18 +1333,6 @@ print('Hello World')
       if (!code.trim()) {
         showError(
           "Masukkan kode Lua terlebih dahulu."
-        );
-
-        return;
-      }
-
-      if (
-        WORKER_URL.includes(
-          "YOUR-SUBDOMAIN"
-        )
-      ) {
-        showError(
-          "WORKER_URL belum diisi. Nanti masukkan URL Worker kamu di bagian CONFIG."
         );
 
         return;
@@ -1464,8 +1368,16 @@ print('Hello World')
             }
           );
 
-        const data =
-          await response.json();
+        let data;
+
+        try {
+          data =
+            await response.json();
+        } catch {
+          throw new Error(
+            `Worker mengembalikan response tidak valid. HTTP ${response.status}`
+          );
+        }
 
         if (
           !response.ok ||
@@ -1477,10 +1389,6 @@ print('Hello World')
             "Upload gagal."
           );
         }
-
-        // ================================
-        // SUCCESS
-        // ================================
 
         result.classList.add(
           "show"
@@ -1522,22 +1430,19 @@ print('Hello World')
       }
     }
 
-
-    // =========================================
-    // CONVERT BUTTON
-    // =========================================
-
     convertBtn.addEventListener(
       "click",
       uploadCode
     );
 
-
-    // =========================================
+    // =========================
     // COPY
-    // =========================================
+    // =========================
 
-    async function copyText(text, button) {
+    async function copyText(
+      text,
+      button
+    ) {
       if (!text) {
         return;
       }
@@ -1559,9 +1464,10 @@ print('Hello World')
         }, 1200);
 
       } catch {
-        // Fallback
         const textarea =
-          document.createElement("textarea");
+          document.createElement(
+            "textarea"
+          );
 
         textarea.value =
           text;
@@ -1594,17 +1500,14 @@ print('Hello World')
       }
     }
 
-
     document
       .querySelectorAll(
         ".copy-btn"
       )
       .forEach(button => {
-
         button.addEventListener(
           "click",
           () => {
-
             const type =
               button.dataset.copy;
 
@@ -1625,21 +1528,17 @@ print('Hello World')
                 button
               );
             }
-
           }
         );
-
       });
 
-
-    // =========================================
+    // =========================
     // TAB SUPPORT
-    // =========================================
+    // =========================
 
     codeInput.addEventListener(
       "keydown",
       event => {
-
         if (
           event.key === "Tab"
         ) {
@@ -1667,7 +1566,6 @@ print('Hello World')
 
           updateCounter();
         }
-
       }
     );
   </script>
