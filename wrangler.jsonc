@@ -1,11 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "loadgeneratortmpek",
-  "main": "auto-uploader-v2/worker.js",
+  "main": "worker.js",
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
   "assets": {
-    "directory": "auto-uploader-v2"
+    "directory": "public"
   },
   "observability": {
     "enabled": true
