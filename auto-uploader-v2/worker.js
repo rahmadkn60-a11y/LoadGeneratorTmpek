@@ -1,6 +1,3 @@
-const OWNER = "rahmadkn60-a11y";
-const REPOSITORY = "LOADSTRINGVANZ";
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -13,6 +10,28 @@ export default {
       });
     }
 
+    // Validate configuration
+    if (
+      !env.GITHUB_TOKEN ||
+      !env.GITHUB_OWNER ||
+      !env.GITHUB_REPO
+    ) {
+      return json(
+        {
+          success: false,
+          error:
+            "Konfigurasi GitHub belum lengkap. Pastikan GITHUB_TOKEN, GITHUB_OWNER, dan GITHUB_REPO sudah dipasang."
+        },
+        500
+      );
+    }
+
+    const owner =
+      String(env.GITHUB_OWNER).trim();
+
+    const repository =
+      String(env.GITHUB_REPO).trim();
+
     // WORKER STATUS
     if (
       request.method === "GET" &&
@@ -20,9 +39,10 @@ export default {
     ) {
       return json({
         success: true,
-        service: "Load Generator TMPEK",
+        service: "Universal GitHub Uploader",
         status: "online",
-        repository: `${OWNER}/${REPOSITORY}`
+        repository:
+          `${owner}/${repository}`
       });
     }
 
@@ -31,7 +51,12 @@ export default {
       request.method === "POST" &&
       url.pathname === "/api/upload"
     ) {
-      return handleUpload(request, env);
+      return handleUpload(
+        request,
+        env,
+        owner,
+        repository
+      );
     }
 
     return json(
@@ -44,26 +69,23 @@ export default {
   }
 };
 
-async function handleUpload(request, env) {
-  if (!env.GITHUB_TOKEN) {
-    return json(
-      {
-        success: false,
-        error: "GITHUB_TOKEN belum dipasang."
-      },
-      500
-    );
-  }
-
+async function handleUpload(
+  request,
+  env,
+  owner,
+  repository
+) {
   let body;
 
   try {
-    body = await request.json();
+    body =
+      await request.json();
   } catch {
     return json(
       {
         success: false,
-        error: "Request JSON tidak valid."
+        error:
+          "Request JSON tidak valid."
       },
       400
     );
@@ -78,7 +100,8 @@ async function handleUpload(request, env) {
     return json(
       {
         success: false,
-        error: "Kode Lua kosong."
+        error:
+          "Kode Lua kosong."
       },
       400
     );
@@ -86,13 +109,19 @@ async function handleUpload(request, env) {
 
   // Maksimum 2 MiB
   const size =
-    new TextEncoder().encode(code).byteLength;
+    new TextEncoder()
+      .encode(code)
+      .byteLength;
 
-  if (size > 2 * 1024 * 1024) {
+  if (
+    size >
+    2 * 1024 * 1024
+  ) {
     return json(
       {
         success: false,
-        error: "Kode terlalu besar. Maksimum 2 MiB."
+        error:
+          "Kode terlalu besar. Maksimum 2 MiB."
       },
       413
     );
@@ -102,17 +131,19 @@ async function handleUpload(request, env) {
     // Cari filename random
     const filename =
       await findAvailableFilename(
-        env.GITHUB_TOKEN
+        env.GITHUB_TOKEN,
+        owner,
+        repository
       );
 
-    // Encode Lua
+    // Encode source code
     const encoded =
       encodeBase64(code);
 
     // GitHub Contents API
     const githubUrl =
       `https://api.github.com/repos/` +
-      `${OWNER}/${REPOSITORY}/contents/${filename}`;
+      `${owner}/${repository}/contents/${filename}`;
 
     const response =
       await fetch(
@@ -134,7 +165,7 @@ async function handleUpload(request, env) {
               "application/json",
 
             "User-Agent":
-              "Load-Generator-TMPEK"
+              "Universal-GitHub-Uploader"
           },
 
           body:
@@ -155,8 +186,12 @@ async function handleUpload(request, env) {
       return json(
         {
           success: false,
-          error: "GitHub menolak upload.",
-          status: response.status,
+          error:
+            "GitHub menolak upload.",
+
+          status:
+            response.status,
+
           message:
             result?.message ||
             "Unknown GitHub error"
@@ -165,11 +200,11 @@ async function handleUpload(request, env) {
       );
     }
 
-    // Raw URL
+    // GitHub download URL
     const rawUrl =
       result?.content?.download_url ||
       `https://raw.githubusercontent.com/` +
-      `${OWNER}/${REPOSITORY}/HEAD/${filename}`;
+      `${owner}/${repository}/HEAD/${filename}`;
 
     // Loadstring
     const loadstring =
@@ -177,10 +212,14 @@ async function handleUpload(request, env) {
 
     return json({
       success: true,
+
       filename,
+
       repository:
-        `${OWNER}/${REPOSITORY}`,
+        `${owner}/${repository}`,
+
       rawUrl,
+
       loadstring
     });
 
@@ -197,7 +236,11 @@ async function handleUpload(request, env) {
   }
 }
 
-async function findAvailableFilename(token) {
+async function findAvailableFilename(
+  token,
+  owner,
+  repository
+) {
   const MAX_ATTEMPTS = 25;
 
   for (
@@ -210,7 +253,7 @@ async function findAvailableFilename(token) {
 
     const checkUrl =
       `https://api.github.com/repos/` +
-      `${OWNER}/${REPOSITORY}/contents/${filename}`;
+      `${owner}/${repository}/contents/${filename}`;
 
     const response =
       await fetch(
@@ -229,13 +272,15 @@ async function findAvailableFilename(token) {
               "2022-11-28",
 
             "User-Agent":
-              "Load-Generator-TMPEK"
+              "Universal-GitHub-Uploader"
           }
         }
       );
 
-    // 404 = file belum ada
-    if (response.status === 404) {
+    // File belum ada
+    if (
+      response.status === 404
+    ) {
       return filename;
     }
 
@@ -267,7 +312,9 @@ function randomString(length) {
   const values =
     new Uint32Array(length);
 
-  crypto.getRandomValues(values);
+  crypto.getRandomValues(
+    values
+  );
 
   let result = "";
 
@@ -278,7 +325,8 @@ function randomString(length) {
   ) {
     result +=
       alphabet[
-        values[i] % alphabet.length
+        values[i] %
+        alphabet.length
       ];
   }
 
@@ -287,11 +335,13 @@ function randomString(length) {
 
 function encodeBase64(text) {
   const bytes =
-    new TextEncoder().encode(text);
+    new TextEncoder()
+      .encode(text);
 
   let binary = "";
 
-  const CHUNK_SIZE = 0x8000;
+  const CHUNK_SIZE =
+    0x8000;
 
   for (
     let i = 0;
@@ -308,7 +358,9 @@ function encodeBase64(text) {
       );
 
     binary +=
-      String.fromCharCode(...chunk);
+      String.fromCharCode(
+        ...chunk
+      );
   }
 
   return btoa(binary);
@@ -322,7 +374,10 @@ async function safeJson(response) {
   }
 }
 
-function json(data, status = 200) {
+function json(
+  data,
+  status = 200
+) {
   return new Response(
     JSON.stringify(
       data,
@@ -344,7 +399,8 @@ function json(data, status = 200) {
 
 function corsHeaders() {
   return {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin":
+      "*",
 
     "Access-Control-Allow-Methods":
       "GET, POST, OPTIONS",
