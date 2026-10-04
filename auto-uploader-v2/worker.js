@@ -1,10 +1,11 @@
+const OWNER = "rahmadkn60-a11y";
+const REPOSITORY = "LOADSTRINGVANZ";
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // ================================
     // CORS
-    // ================================
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -12,22 +13,25 @@ export default {
       });
     }
 
-    // ================================
-    // TEST / STATUS
-    // ================================
-    if (request.method === "GET" && url.pathname === "/") {
+    // WORKER STATUS
+    if (
+      request.method === "GET" &&
+      url.pathname === "/"
+    ) {
       return json({
         success: true,
-        service: "Auto Uploader V2",
-        status: "online"
+        service: "Load Generator TMPEK",
+        status: "online",
+        repository: `${OWNER}/${REPOSITORY}`
       });
     }
 
-    // ================================
-    // API UPLOAD
-    // ================================
-    if (request.method === "POST" && url.pathname === "/api/upload") {
-      return uploadToGitHub(request, env);
+    // UPLOAD API
+    if (
+      request.method === "POST" &&
+      url.pathname === "/api/upload"
+    ) {
+      return handleUpload(request, env);
     }
 
     return json(
@@ -40,20 +44,12 @@ export default {
   }
 };
 
-
-// ============================================
-// GITHUB UPLOAD
-// ============================================
-
-async function uploadToGitHub(request, env) {
-  const OWNER = "rahmadkn60-a11y";
-  const REPO = "BUATSCRIPT";
-
+async function handleUpload(request, env) {
   if (!env.GITHUB_TOKEN) {
     return json(
       {
         success: false,
-        error: "GITHUB_TOKEN belum dipasang di Cloudflare."
+        error: "GITHUB_TOKEN belum dipasang."
       },
       500
     );
@@ -67,30 +63,32 @@ async function uploadToGitHub(request, env) {
     return json(
       {
         success: false,
-        error: "Data request tidak valid."
+        error: "Request JSON tidak valid."
       },
       400
     );
   }
 
-  const code = typeof body.code === "string"
-    ? body.code
-    : "";
+  const code =
+    typeof body.code === "string"
+      ? body.code
+      : "";
 
   if (!code.trim()) {
     return json(
       {
         success: false,
-        error: "Kode Lua masih kosong."
+        error: "Kode Lua kosong."
       },
       400
     );
   }
 
-  // Batas 2 MiB
-  const byteLength = new TextEncoder().encode(code).length;
+  // Maksimum 2 MiB
+  const size =
+    new TextEncoder().encode(code).byteLength;
 
-  if (byteLength > 2 * 1024 * 1024) {
+  if (size > 2 * 1024 * 1024) {
     return json(
       {
         success: false,
@@ -101,37 +99,57 @@ async function uploadToGitHub(request, env) {
   }
 
   try {
-    // Cari nama random yang belum digunakan
-    const filename = await findAvailableFilename(
-      OWNER,
-      REPO,
-      env.GITHUB_TOKEN
-    );
+    // Cari filename random
+    const filename =
+      await findAvailableFilename(
+        env.GITHUB_TOKEN
+      );
 
-    // Encode UTF-8 → Base64
-    const encoded = encodeBase64(code);
+    // Encode Lua
+    const encoded =
+      encodeBase64(code);
 
-    const apiUrl =
-      `https://api.github.com/repos/${OWNER}/${REPO}/contents/${filename}`;
+    // GitHub Contents API
+    const githubUrl =
+      `https://api.github.com/repos/` +
+      `${OWNER}/${REPOSITORY}/contents/${filename}`;
 
-    const response = await fetch(apiUrl, {
-      method: "PUT",
+    const response =
+      await fetch(
+        githubUrl,
+        {
+          method: "PUT",
 
-      headers: {
-        "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "Content-Type": "application/json",
-        "User-Agent": "Auto-Uploader-V2"
-      },
+          headers: {
+            "Authorization":
+              `Bearer ${env.GITHUB_TOKEN}`,
 
-      body: JSON.stringify({
-        message: `Auto upload ${filename}`,
-        content: encoded
-      })
-    });
+            "Accept":
+              "application/vnd.github+json",
 
-    const result = await safeJson(response);
+            "X-GitHub-Api-Version":
+              "2022-11-28",
+
+            "Content-Type":
+              "application/json",
+
+            "User-Agent":
+              "Load-Generator-TMPEK"
+          },
+
+          body:
+            JSON.stringify({
+              message:
+                `Upload ${filename}`,
+
+              content:
+                encoded
+            })
+        }
+      );
+
+    const result =
+      await safeJson(response);
 
     if (!response.ok) {
       return json(
@@ -139,29 +157,30 @@ async function uploadToGitHub(request, env) {
           success: false,
           error: "GitHub menolak upload.",
           status: response.status,
-          message: result?.message || "Unknown GitHub error"
+          message:
+            result?.message ||
+            "Unknown GitHub error"
         },
         502
       );
     }
 
-    // GitHub biasanya memberikan download_url
+    // Raw URL
     const rawUrl =
       result?.content?.download_url ||
-      `https://raw.githubusercontent.com/${OWNER}/${REPO}/HEAD/${filename}`;
+      `https://raw.githubusercontent.com/` +
+      `${OWNER}/${REPOSITORY}/HEAD/${filename}`;
 
+    // Loadstring
     const loadstring =
       `loadstring(game:HttpGet("${rawUrl}"))()`;
 
     return json({
       success: true,
-
       filename,
-
-      repository: `${OWNER}/${REPO}`,
-
+      repository:
+        `${OWNER}/${REPOSITORY}`,
       rawUrl,
-
       loadstring
     });
 
@@ -169,94 +188,102 @@ async function uploadToGitHub(request, env) {
     return json(
       {
         success: false,
-        error: error?.message || "Upload gagal."
+        error:
+          error?.message ||
+          "Upload gagal."
       },
       500
     );
   }
 }
 
-
-// ============================================
-// CARI NAMA FILE RANDOM
-// ============================================
-
-async function findAvailableFilename(
-  owner,
-  repo,
-  token
-) {
+async function findAvailableFilename(token) {
   const MAX_ATTEMPTS = 25;
 
-  for (let i = 0; i < MAX_ATTEMPTS; i++) {
+  for (
+    let attempt = 0;
+    attempt < MAX_ATTEMPTS;
+    attempt++
+  ) {
     const filename =
-      `${randomFilename(14)}.lua`;
+      `${randomString(14)}.lua`;
 
-    const url =
-      `https://api.github.com/repos/${owner}/${repo}/contents/${filename}`;
+    const checkUrl =
+      `https://api.github.com/repos/` +
+      `${OWNER}/${REPOSITORY}/contents/${filename}`;
 
-    const response = await fetch(url, {
-      method: "GET",
+    const response =
+      await fetch(
+        checkUrl,
+        {
+          method: "GET",
 
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "Auto-Uploader-V2"
-      }
-    });
+          headers: {
+            "Authorization":
+              `Bearer ${token}`,
 
-    // Belum ada → aman digunakan
+            "Accept":
+              "application/vnd.github+json",
+
+            "X-GitHub-Api-Version":
+              "2022-11-28",
+
+            "User-Agent":
+              "Load-Generator-TMPEK"
+          }
+        }
+      );
+
+    // 404 = file belum ada
     if (response.status === 404) {
       return filename;
     }
 
-    // Sudah ada → generate lagi
+    // File sudah ada
     if (response.ok) {
       continue;
     }
 
-    const result = await safeJson(response);
+    const result =
+      await safeJson(response);
 
     throw new Error(
       result?.message ||
-      `Gagal mengecek GitHub (${response.status}).`
+      `GitHub check error: ${response.status}`
     );
   }
 
   throw new Error(
-    "Tidak berhasil mendapatkan nama file random."
+    "Gagal mendapatkan nama file random."
   );
 }
 
-
-// ============================================
-// RANDOM FILENAME
-// ============================================
-
-function randomFilename(length) {
+function randomString(length) {
   const alphabet =
-    "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    "ABCDEFGHJKLMNPQRSTUVWXYZ" +
+    "abcdefghijkmnopqrstuvwxyz" +
+    "23456789";
 
   const values =
     new Uint32Array(length);
 
   crypto.getRandomValues(values);
 
-  let output = "";
+  let result = "";
 
-  for (let i = 0; i < length; i++) {
-    output +=
-      alphabet[values[i] % alphabet.length];
+  for (
+    let i = 0;
+    i < length;
+    i++
+  ) {
+    result +=
+      alphabet[
+        values[i] % alphabet.length
+      ];
   }
 
-  return output;
+  return result;
 }
-
-
-// ============================================
-// UTF-8 → BASE64
-// ============================================
 
 function encodeBase64(text) {
   const bytes =
@@ -280,16 +307,12 @@ function encodeBase64(text) {
         )
       );
 
-    binary += String.fromCharCode(...chunk);
+    binary +=
+      String.fromCharCode(...chunk);
   }
 
   return btoa(binary);
 }
-
-
-// ============================================
-// SAFE JSON
-// ============================================
 
 async function safeJson(response) {
   try {
@@ -299,14 +322,13 @@ async function safeJson(response) {
   }
 }
 
-
-// ============================================
-// JSON RESPONSE
-// ============================================
-
 function json(data, status = 200) {
   return new Response(
-    JSON.stringify(data, null, 2),
+    JSON.stringify(
+      data,
+      null,
+      2
+    ),
     {
       status,
 
@@ -319,11 +341,6 @@ function json(data, status = 200) {
     }
   );
 }
-
-
-// ============================================
-// CORS HEADERS
-// ============================================
 
 function corsHeaders() {
   return {
